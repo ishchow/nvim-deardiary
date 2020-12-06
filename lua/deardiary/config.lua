@@ -11,10 +11,13 @@ M.frequencies = {
         transform = function(curr_date, offset)
             return curr_date:adddays(7 * offset)
         end,
-        pathformat = "%Y/%V.md",
+        pathformat = "%Y/%U.md",
     },
     monthly = {
         transform = function(curr_date, offset)
+            if offset ~= 0 then
+                curr_date:setday(1)
+            end
             return curr_date:addmonths(offset)
         end,
         pathformat = "%Y/%m.md",

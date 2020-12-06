@@ -11,6 +11,11 @@ TODO
 
 # Contributing
 
+## Testing plugin locally
+At root of repo, run
+
+`nvim --cmd "set rtp+=$(pwd)" README.md`
+
 ## Setup hererocks
 ```
 pip3 install hererocks # use sudo if this doesn't work
@@ -25,4 +30,5 @@ luarocks install busted
 
 ## Deactivate hererocks
 
-`lua-deactivato`
+`lua-deactivate`
+
