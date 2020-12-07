@@ -1,6 +1,5 @@
 describe("test util.get_path()", function()
-    package.path = package.path .. ";spec/vim.lua"
-    _G.vim = require("vim")
+    _G.vim = require("mock.vim")
 
     local util = require("deardiary.util")
     local config = require("deardiary.config")

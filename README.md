@@ -26,9 +26,7 @@ luarocks install busted penlight
 
 ## Run tests
 
-Ensure `VIMRUNTIME` enviroment variable is set.
-
-`busted --lpath=lua/?.lua`
+`busted`
 
 ## Deactivate hererocks
 
