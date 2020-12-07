@@ -1,8 +1,11 @@
-local util = require("deardiary.util")
-local config = require("deardiary.config")
-local date = require("deardiary.lib.date")
-
 describe("test util.get_date()", function()
+    package.path = package.path .. ";spec/vim.lua"
+    _G.vim = require("vim")
+
+    local util = require("deardiary.util")
+    local config = require("deardiary.config")
+    local date = require("deardiary.lib.date")
+
     local curr_date = date("2020-12-31");
 
     describe("daily frequency", function()

@@ -1,3 +1,5 @@
+local util = require("deardiary.util")
+
 local M = {}
 
 M.frequencies = {
@@ -5,13 +7,13 @@ M.frequencies = {
         transform = function(curr_date, offset)
             return curr_date:adddays(offset)
         end,
-        pathformat = "%Y/%m/%d.md",
+        pathformat = util.join_path({"%Y", "%m", "%d.md"})
     },
     weekly = {
         transform = function(curr_date, offset)
             return curr_date:adddays(7 * offset)
         end,
-        pathformat = "%Y/%U.md",
+        pathformat = util.join_path({"%Y", "%U.md"})
     },
     monthly = {
         transform = function(curr_date, offset)
@@ -20,7 +22,7 @@ M.frequencies = {
             end
             return curr_date:addmonths(offset)
         end,
-        pathformat = "%Y/%m.md",
+        pathformat = util.join_path({"%Y", "%m.md"}),
     },
     yearly = {
         transform = function(curr_date, offset)

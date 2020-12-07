@@ -21,10 +21,12 @@ At root of repo, run
 pip3 install hererocks # use sudo if this doesn't work
 hererocks -j 2.1.0-beta3 -r latest env
 source env/bin/activate
-luarocks install busted
+luarocks install busted penlight
 ```
 
 ## Run tests
+
+Ensure `VIMRUNTIME` enviroment variable is set.
 
 `busted --lpath=lua/?.lua`
 
