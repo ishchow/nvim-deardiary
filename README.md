@@ -12,21 +12,22 @@ TODO
 # Contributing
 
 ## Testing plugin locally
-At root of repo, run
 
 `nvim --cmd "set rtp+=$(pwd)" README.md`
 
 ## Setup hererocks
+
 ```
 pip3 install hererocks # use sudo if this doesn't work
 hererocks -j 2.1.0-beta3 -r latest env
 source env/bin/activate
-luarocks install busted penlight
 ```
 
 ## Run tests
 
-`busted`
+Installs test dependencies if not already installed and runs unit tests.
+
+`luarocks test`
 
 ## Deactivate hererocks
 
