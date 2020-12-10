@@ -1,5 +1,5 @@
 return {
     _all = {
-        lpath = "lua/?.lua;mock/?.lua",
+        lpath = "lua/?.lua;lua/?/?.lua;lua/?/init.lua;mock/?.lua;mock/?/?.lua;mock/init.lua",
     },
 }

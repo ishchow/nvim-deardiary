@@ -24,6 +24,7 @@ build = {
 test_dependencies = {
     'busted',
     'penlight',
+    'inspect',
 }
 test = {
     type = "busted",

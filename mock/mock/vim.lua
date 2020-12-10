@@ -15,6 +15,18 @@ return {
                 win64 = pl.path.sep == "\\",
             }
             return d[h]
+        end,
+        mkdir = function(name, path, prot)
+            pl.dir.makepath(name)
         end
     },
+    g = {},
+    b = {},
+    w = {},
+    t = {},
+    v = {},
+    env = {},
+    o = {},
+    bo = {},
+    wo = {},
 }
