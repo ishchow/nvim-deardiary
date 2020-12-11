@@ -1,6 +1,19 @@
 local pl = require'pl.import_into'()
 
 return {
+    cmd = function(cmd)
+    end,
+    list_extend = function(dst, src, start, finish)
+        pl.tablex.insertvalues(dst, src)
+        return dst
+    end,
+    tbl_contains = function(t, value)
+        local l = pl.List(t)
+        return l:contains(value)
+    end,
+    inspect = function(object, options)
+        return pl.pretty.write(object)
+    end,
     fn = {
         split = pl.stringx.split,
         join = function(list, sep)

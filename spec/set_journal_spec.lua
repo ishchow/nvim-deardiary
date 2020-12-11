@@ -21,11 +21,11 @@ describe("test set_journal()", function()
     it("valid journals", function()
         config.journals = {
             {
-                path = "~/home/user/journals/personal",
+                path = "~/journals/personal",
                 frequencies = {"daily", "weekly"},
             },
             {
-                path = "~/home/user/journals/work",
+                path = "~/journals/work",
                 frequencies = {"daily", "weekly", "monthly", "yearly"},
             },
         }
@@ -34,5 +34,8 @@ describe("test set_journal()", function()
 
         deardiary.set_journal(config.journals[2])
         assert.same(vim.g.deardiary_current_journal, config.journals[2])
+
+        deardiary.set_journal(config.journals[1])
+        assert.same(vim.g.deardiary_current_journal, config.journals[1])
     end)
 end)
