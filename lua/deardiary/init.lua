@@ -4,6 +4,13 @@ local date = require("deardiary.lib.date")
 
 local M = {}
 
+M.get_date = function(offset, frequency, curr_date)
+    assert(type(offset) == "number", "offset should be a number")
+    assert(type(frequency) == "table", "frequency should be a table")
+    curr_date = curr_date or date(false)
+    return frequency.transform(curr_date:copy(), offset)
+end
+
 M.create_diary_entry = function(frequency_name, offset, curr_date)
     assert(type(frequency_name) == "string", "frequency_name should be a string")
     curr_date = curr_date or date(false)
@@ -28,8 +35,8 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
     local parts = util.split_path(journal.path)
     table.insert(parts, frequency_name)
 
-    local entry_path = util.get_path(offset, frequency.transform,
-        frequency.pathformat, curr_date)
+    local entry_date = M.get_date(offset, frequency, curr_date)
+    local entry_path = entry_date:fmt(frequency.pathformat)
     local entry_parts = util.split_path(entry_path)
     vim.list_extend(parts, entry_parts)
 
