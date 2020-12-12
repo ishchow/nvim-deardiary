@@ -43,14 +43,14 @@ describe("test create_diary_entry()", function()
     end)
 
     it("invalid frequency name", function()
-        deardiary.set_journal(config.journals[1])
+        deardiary.set_journal(1)
 
         deardiary.create_diary_entry("nonexistent", 0, curr_date)
         assert.same(last_cmd, "echo 'Invalid frequency'")
     end)
 
     it("frequency not enabled for journal", function()
-        deardiary.set_journal(config.journals[1])
+        deardiary.set_journal(1)
 
         deardiary.create_diary_entry("weekly", 0, curr_date)
         assert.same(last_cmd, "echo 'Frequency not enabled for journal'")
@@ -59,7 +59,7 @@ describe("test create_diary_entry()", function()
     it("should succeed", function()
         local pathformat = config.frequencies.daily.pathformat
 
-        deardiary.set_journal(config.journals[1])
+        deardiary.set_journal(1)
 
         deardiary.create_diary_entry("daily", 0, curr_date)
         local today_path = journal_path

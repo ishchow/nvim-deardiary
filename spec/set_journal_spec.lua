@@ -10,11 +10,29 @@ describe("test set_journal()", function()
     end)
 
     it("no journals configured", function()
-        local journal = {
-            path = "~/some/path",
-            frequencies = {"somefrequency"},
+        deardiary.set_journal(1)
+        assert.is_nil(vim.g.deardiary_current_journal)
+    end)
+
+    it("invalid journal index", function()
+        config.journals = {
+            {
+                path = "~/journals/personal",
+                frequencies = {"daily", "weekly"},
+            },
+            {
+                path = "~/journals/work",
+                frequencies = {"daily", "weekly", "monthly", "yearly"},
+            },
         }
-        deardiary.set_journal(journal)
+
+        deardiary.set_journal(-1)
+        assert.is_nil(vim.g.deardiary_current_journal)
+
+        deardiary.set_journal(0)
+        assert.is_nil(vim.g.deardiary_current_journal)
+
+        deardiary.set_journal(3)
         assert.is_nil(vim.g.deardiary_current_journal)
     end)
 
@@ -29,13 +47,13 @@ describe("test set_journal()", function()
                 frequencies = {"daily", "weekly", "monthly", "yearly"},
             },
         }
-        deardiary.set_journal(config.journals[1])
+        deardiary.set_journal(1)
         assert.same(vim.g.deardiary_current_journal, config.journals[1])
 
-        deardiary.set_journal(config.journals[2])
+        deardiary.set_journal(2)
         assert.same(vim.g.deardiary_current_journal, config.journals[2])
 
-        deardiary.set_journal(config.journals[1])
+        deardiary.set_journal(1)
         assert.same(vim.g.deardiary_current_journal, config.journals[1])
     end)
 end)

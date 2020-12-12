@@ -40,12 +40,19 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
     vim.cmd("e " .. util.join_path(parts))
 end
 
-M.set_journal = function(journal)
-    assert(type(journal) == "table", "journal should be a table")
-
-    if next(config.journals) ~= nil then
-        vim.g.deardiary_current_journal = journal
+M.set_journal = function(journal_index)
+    assert(type(journal_index) == "number", "journal_index should be a number")
+    if next(config.journals) == nil then
+        vim.cmd("echo 'No journals configured'")
+        return
     end
+
+    local journal = config.journals[journal_index]
+    if journal == nil then
+        vim.cmd("echo 'Invalid journal index'")
+        return
+    end
+    vim.g.deardiary_current_journal = journal
 end
 
 return M
