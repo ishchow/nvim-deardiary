@@ -24,14 +24,17 @@ return {
         end,
         has = function(h)
             local d = {
-                win32 = pl.path.sep == "\\",
-                win64 = pl.path.sep == "\\",
+                win32 = (pl.path.sep == "\\") and 1 or 0,
+                win64 = (pl.path.sep == "\\") and 1 or 0,
             }
             return d[h]
         end,
         mkdir = function(name, path, prot)
             pl.dir.makepath(name)
-        end
+        end,
+        expand = function(expr, nosurf, list)
+            return pl.path.expanduser(expr)
+        end,
     },
     g = {},
     b = {},

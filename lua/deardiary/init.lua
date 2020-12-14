@@ -15,6 +15,11 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
     assert(type(frequency_name) == "string", "frequency_name should be a string")
     curr_date = curr_date or date(false)
 
+    if next(config.journals) == nil then
+        vim.cmd("echo 'No journals configured'")
+        return
+    end
+
     local journal = vim.g.deardiary_current_journal
     if journal == nil then
         vim.cmd("echo 'No journal set'")
@@ -41,13 +46,13 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
     vim.list_extend(parts, entry_parts)
 
     local filename = table.remove(parts)
-    vim.fn.mkdir(util.join_path(parts), "p")
+    vim.fn.mkdir(vim.fn.expand(util.join_path(parts)), "p")
     table.insert(parts, filename)
 
     vim.cmd("e " .. util.join_path(parts))
 end
 
-M.set_journal = function(journal_index)
+M.set_current_journal = function(journal_index)
     assert(type(journal_index) == "number", "journal_index should be a number")
     if next(config.journals) == nil then
         vim.cmd("echo 'No journals configured'")
@@ -60,6 +65,38 @@ M.set_journal = function(journal_index)
         return
     end
     vim.g.deardiary_current_journal = journal
+end
+
+M.select_journal = function()
+    if next(config.journals) == nil then
+        vim.cmd("echo 'No journals configured'")
+        return
+    end
+
+    for idx, journal in pairs(config.journals) do
+        if vim.deep_equal(journal, vim.g.deardiary_current_journal) then
+            vim.cmd("echohl PmenuSel")
+        else
+            vim.cmd("echohl None")
+        end
+        local line = string.format("%2d    %s", idx, journal.path)
+        vim.cmd(string.format("echo '%s'", line))
+    end
+
+    vim.cmd("echohl None")
+    local input = vim.fn.input("Type in journal index and press <Enter> (empty cancels): ")
+    if input == "" then
+        return
+    end
+
+    local journal_index = tonumber(input)
+    if journal_index == nil then
+        vim.cmd("echo '\nInvalid journal index'")
+        return
+    else
+        M.set_current_journal(journal_index)
+        return
+    end
 end
 
 return M

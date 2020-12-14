@@ -29,6 +29,11 @@ Installs test dependencies if not already installed and runs unit tests.
 
 `luarocks test`
 
+After test dependencies are installed, the above command can be used to re-run
+tests or you can run tests directly using busted.
+
+`busted`
+
 ## Deactivate hererocks
 
 `lua-deactivate`
