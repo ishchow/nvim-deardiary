@@ -24,8 +24,8 @@ return {
         end,
         has = function(h)
             local d = {
-                win32 = (pl.path.sep == "\\") and 1 or 0,
-                win64 = (pl.path.sep == "\\") and 1 or 0,
+                win32 = (pl.path.is_windows) and 1 or 0,
+                win64 = (pl.path.is_windows) and 1 or 0,
             }
             return d[h]
         end,
