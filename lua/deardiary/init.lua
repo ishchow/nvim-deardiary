@@ -49,7 +49,15 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
     vim.fn.mkdir(vim.fn.expand(util.join_path(parts)), "p")
     table.insert(parts, filename)
 
-    vim.cmd("e " .. util.join_path(parts))
+    local buf_handle = vim.api.nvim_create_buf(true, false)
+    local path = vim.fn.expand(util.join_path(parts))
+    vim.api.nvim_buf_set_name(buf_handle, path)
+    local template_string = frequency.template(entry_date:copy())
+    local lines = vim.fn.split(template_string, "\n")
+    if next(lines) ~= nil then
+        vim.api.nvim_buf_set_lines(buf_handle, 0, #lines, false, lines)
+    end
+    vim.cmd("b" .. buf_handle)
 end
 
 M.set_current_journal = function(journal_index)

@@ -3,7 +3,10 @@ describe("test create_diary_entry()", function()
     local pl = require"pl.import_into"()
 
     local last_cmd
+    local buffers = {}
+
     _G.vim = require("mock.vim")
+
     vim.cmd = function(cmd)
         last_cmd = cmd
 
@@ -14,10 +17,34 @@ describe("test create_diary_entry()", function()
 
         local edit_match = string.gmatch(cmd, "e (.*)")()
         if edit_match ~= nil then
-            pl.file.write(edit_match, "")
+            pl.file.write(edit_match(), "")
             return
         end
+
+        local b_match = string.gmatch(cmd, "b([0-9]+)")()
+        if b_match ~= nil then
+            local buf_handle = tonumber(b_match)
+            pl.file.write(buffers[buf_handle].name, vim.fn.join(buffers[buf_handle].lines, "\n"))
+        end
     end
+
+    vim.api = {
+        nvim_create_buf = function(listed, scratch)
+            table.insert(buffers, {
+                name = "",
+                lines = {}
+            })
+            return #buffers
+        end,
+        nvim_buf_set_name = function(buffer, name)
+            buffers[buffer].name = name
+        end,
+        nvim_buf_set_lines = function(buffer, startidx, endidx, strict_indexing, replacement)
+            for i = startidx, endidx do
+                buffers[buffer].lines[i] = replacement[i]
+            end
+        end,
+    }
 
     local deardiary = require("deardiary")
     local util = require("deardiary.util")
@@ -34,9 +61,15 @@ describe("test create_diary_entry()", function()
         config.journals = {
             {
                 path = journal_path,
-                frequencies = {"daily"},
+                frequencies = {"daily", "monthly", "weekly", "yearly"},
             },
         }
+    end)
+
+    after_each(function()
+        if pl.path.exists(journal_path) then
+            pl.dir.rmtree(journal_path)
+        end
     end)
 
     it("no journals configured", function()
@@ -58,41 +91,58 @@ describe("test create_diary_entry()", function()
     end)
 
     it("frequency not enabled for journal", function()
+        config.journals = {
+            {
+                path = journal_path,
+                frequencies = {"daily", "monthly", "weekly"},
+            },
+        }
         deardiary.set_current_journal(1)
 
-        deardiary.create_diary_entry("weekly", 0, curr_date)
+        deardiary.create_diary_entry("yearly", 0, curr_date)
         assert.same(last_cmd, "echo 'Frequency not enabled for journal'")
     end)
 
     it("should succeed", function()
-        local pathformat = config.frequencies.daily.pathformat
+        local pathformat = config.frequencies.weekly.pathformat
 
         deardiary.set_current_journal(1)
 
-        deardiary.create_diary_entry("daily", 0, curr_date)
-        local today_path = journal_path
+        deardiary.create_diary_entry("weekly", 0, curr_date)
+        local this_week_path = journal_path
             .. util.get_path_sep()
-            .. "daily"
+            .. "weekly"
             .. util.get_path_sep()
-            .. curr_date:fmt(pathformat)
-        assert.is_not_nil(lfs.attributes(today_path))
+            .. date("2020-12-28"):fmt(pathformat)
+        assert.is_not_nil(lfs.attributes(this_week_path))
 
-        deardiary.create_diary_entry("daily", 1, curr_date)
-        local tomorrow_path = journal_path
-            .. util.get_path_sep()
-            .. "daily"
-            .. util.get_path_sep()
-            .. date("2021-01-01"):fmt(pathformat)
-        assert.is_not_nil(lfs.attributes(tomorrow_path))
+        local contents = pl.file.read(this_week_path)
+        local expected_contents = [[# Week 52 of 2020: Monday, December 28, 2020 - Sunday, January 03, 2021
 
-        deardiary.create_diary_entry("daily", -1, curr_date)
-        local yesterday_path = journal_path
-            .. util.get_path_sep()
-            .. "daily"
-            .. util.get_path_sep()
-            .. date("2020-12-30"):fmt(pathformat)
-        assert.is_not_nil(lfs.attributes(yesterday_path))
 
-        pl.dir.rmtree(journal_path)
+## Monday, December 28, 2020
+
+
+## Tuesday, December 29, 2020
+
+
+## Wednesday, December 30, 2020
+
+
+## Thursday, December 31, 2020
+
+
+## Friday, January 01, 2021
+
+
+## Saturday, January 02, 2021
+
+
+## Sunday, January 03, 2021
+
+
+]]
+        assert.same(contents, expected_contents)
+
     end)
 end)
