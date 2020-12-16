@@ -10,7 +10,9 @@ M.frequencies = {
         template = function(entry_date)
             return entry_date:fmt("# %A, %B %d, %Y")
         end,
-        pathformat = util.join_path({"%Y", "%m", "%d.md"})
+        formatpath = function(entry_date)
+            return entry_date:fmt(util.join_path({"%Y", "%m", "%d.md"}))
+        end
     },
     weekly = {
         transform = function(curr_date, offset)
@@ -35,7 +37,9 @@ M.frequencies = {
             end
             return vim.fn.join(lines, "\n") .. "\n"
         end,
-        pathformat = util.join_path({"%Y", "%W.md"})
+        formatpath = function(entry_date)
+            return entry_date:fmt(util.join_path({"%Y", "%W.md"}))
+        end,
     },
     monthly = {
         transform = function(curr_date, offset)
@@ -43,9 +47,11 @@ M.frequencies = {
             return curr_date:addmonths(offset)
         end,
         template = function(entry_date)
-            return entry_date:fmt("# %B %Y")
+            return entry_date:fmt("# %B, %Y")
         end,
-        pathformat = util.join_path({"%Y", "%m.md"}),
+        formatpath = function(entry_date)
+            return entry_date:fmt(util.join_path({"%Y", "%m.md"}))
+        end,
     },
     yearly = {
         transform = function(curr_date, offset)
@@ -55,7 +61,9 @@ M.frequencies = {
         template = function(entry_date)
             return entry_date:fmt("# %Y")
         end,
-        pathformat = "%Y.md",
+        formatpath = function(entry_date)
+            return entry_date:fmt("%Y.md")
+        end
     },
 }
 

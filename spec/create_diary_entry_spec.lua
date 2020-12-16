@@ -104,7 +104,7 @@ describe("test create_diary_entry()", function()
     end)
 
     it("should succeed", function()
-        local pathformat = config.frequencies.weekly.pathformat
+        local formatpath = config.frequencies.weekly.formatpath
 
         deardiary.set_current_journal(1)
 
@@ -113,7 +113,7 @@ describe("test create_diary_entry()", function()
             .. util.get_path_sep()
             .. "weekly"
             .. util.get_path_sep()
-            .. date("2020-12-28"):fmt(pathformat)
+            .. formatpath(date("2020-12-28"))
         assert.is_not_nil(lfs.attributes(this_week_path))
 
         local contents = pl.file.read(this_week_path)
