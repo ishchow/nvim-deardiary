@@ -40,8 +40,8 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
     local parts = util.split_path(journal.path)
     table.insert(parts, frequency_name)
 
-    local entry_date = M.get_date(offset, frequency, curr_date)
-    local entry_path = frequency.formatpath(entry_date)
+    local entry_date = M.get_date(offset, frequency, curr_date:copy())
+    local entry_path = frequency.formatpath(entry_date:copy())
     local entry_parts = util.split_path(entry_path)
     vim.list_extend(parts, entry_parts)
 
