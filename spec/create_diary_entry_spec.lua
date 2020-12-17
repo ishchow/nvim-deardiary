@@ -57,15 +57,6 @@ describe("test create_diary_entry()", function()
     local journal_parts = vim.list_extend(cwd_parts, {"tmp", "journal"})
     local journal_path = util.join_path(journal_parts)
 
-    before_each(function()
-        config.journals = {
-            {
-                path = journal_path,
-                frequencies = {"daily", "monthly", "weekly", "yearly"},
-            },
-        }
-    end)
-
     after_each(function()
         if pl.path.exists(journal_path) then
             pl.dir.rmtree(journal_path)
@@ -79,11 +70,25 @@ describe("test create_diary_entry()", function()
     end)
 
     it("no journal set", function()
+        config.journals = {
+            {
+                path = journal_path,
+                frequencies = {"daily", "monthly", "weekly", "yearly"},
+            },
+        }
+
         deardiary.create_diary_entry("nonexistent", 0, curr_date)
         assert.same(last_cmd, "echo 'No journal set'")
     end)
 
     it("invalid frequency name", function()
+        config.journals = {
+            {
+                path = journal_path,
+                frequencies = {"daily", "monthly", "weekly"},
+            },
+        }
+
         deardiary.set_current_journal(1)
 
         deardiary.create_diary_entry("nonexistent", 0, curr_date)
@@ -97,27 +102,80 @@ describe("test create_diary_entry()", function()
                 frequencies = {"daily", "monthly", "weekly"},
             },
         }
+
         deardiary.set_current_journal(1)
 
         deardiary.create_diary_entry("yearly", 0, curr_date)
         assert.same(last_cmd, "echo 'Frequency not enabled for journal'")
     end)
 
-    it("should succeed", function()
-        local formatpath = config.frequencies.weekly.formatpath
+    describe("should succeed", function()
+        config.journals = {
+            {
+                path = journal_path,
+                frequencies = {"daily", "monthly", "weekly", "yearly"},
+            },
+        }
 
         deardiary.set_current_journal(1)
 
-        deardiary.create_diary_entry("weekly", 0, curr_date)
-        local this_week_path = journal_path
-            .. util.get_path_sep()
-            .. "weekly"
-            .. util.get_path_sep()
-            .. formatpath(date("2020-12-28"))
-        assert.is_not_nil(lfs.attributes(this_week_path))
+        it("daily", function()
+            local formatpath = config.frequencies.daily.formatpath
+            deardiary.create_diary_entry("daily", 0, curr_date)
+            local today_path = journal_path
+                .. util.get_path_sep()
+                .. "daily"
+                .. util.get_path_sep()
+                .. formatpath(date("2020-12-31"))
+            assert.is_not_nil(lfs.attributes(today_path))
 
-        local contents = pl.file.read(this_week_path)
-        local expected_contents = [[# Week 52 of 2020: Monday, December 28, 2020 - Sunday, January 03, 2021
+            local contents = pl.file.read(today_path)
+            local expected_contents = "# Thursday, December 31, 2020"
+            assert.same(contents, expected_contents)
+        end)
+
+        it("monthly", function()
+            local formatpath = config.frequencies.monthly.formatpath
+            deardiary.create_diary_entry("monthly", 0, curr_date)
+            local this_month_path = journal_path
+                .. util.get_path_sep()
+                .. "monthly"
+                .. util.get_path_sep()
+                .. formatpath(date("2020-12-01"))
+            assert.is_not_nil(lfs.attributes(this_month_path))
+
+            local contents = pl.file.read(this_month_path)
+            local expected_contents = "# December, 2020"
+            assert.same(contents, expected_contents)
+        end)
+
+        it("yearly", function()
+            local formatpath = config.frequencies.yearly.formatpath
+            deardiary.create_diary_entry("yearly", 0, curr_date)
+            local this_year_path = journal_path
+                .. util.get_path_sep()
+                .. "yearly"
+                .. util.get_path_sep()
+                .. formatpath(date("2020-01-01"))
+            assert.is_not_nil(lfs.attributes(this_year_path))
+
+            local contents = pl.file.read(this_year_path)
+            local expected_contents = "# 2020"
+            assert.same(contents, expected_contents)
+        end)
+
+        it("weekly", function()
+            local formatpath = config.frequencies.weekly.formatpath
+            deardiary.create_diary_entry("weekly", 0, curr_date)
+            local this_week_path = journal_path
+                .. util.get_path_sep()
+                .. "weekly"
+                .. util.get_path_sep()
+                .. formatpath(date("2020-12-28"))
+            assert.is_not_nil(lfs.attributes(this_week_path))
+
+            local contents = pl.file.read(this_week_path)
+            local expected_contents = [[# Week 52 of 2020: Monday, December 28, 2020 - Sunday, January 03, 2021
 
 
 ## Monday, December 28, 2020
@@ -142,7 +200,8 @@ describe("test create_diary_entry()", function()
 
 
 ]]
-        assert.same(contents, expected_contents)
 
+            assert.same(contents, expected_contents)
+        end)
     end)
 end)
