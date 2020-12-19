@@ -26,14 +26,27 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
         return
     end
 
-    local frequency = config.frequencies[frequency_name]
-    if frequency == nil then
-        vim.cmd("echo 'Invalid frequency'")
+    local config_freq = config.frequencies[frequency_name]
+    if config_freq == nil then
+        config_freq = {}
+    end
+
+    local journal_freq = vim.g.deardiary_current_journal.frequencies[frequency_name]
+    if journal_freq == nil then
+        journal_freq = {}
+    end
+
+    if next(config_freq) ~= nil
+        and next(journal_freq) == nil
+        and not vim.tbl_contains(journal.frequencies, frequency_name)
+        then
+        vim.cmd("echo 'Frequency not enabled for journal'")
         return
     end
 
-    if not vim.tbl_contains(journal.frequencies, frequency_name) then
-        vim.cmd("echo 'Frequency not enabled for journal'")
+    local frequency = vim.tbl_extend("force", config_freq, journal_freq)
+    if next(frequency) == nil then
+        vim.cmd("echo 'Invalid frequency'")
         return
     end
 

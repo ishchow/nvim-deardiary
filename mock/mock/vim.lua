@@ -11,6 +11,15 @@ return {
         local l = pl.List(t)
         return l:contains(value)
     end,
+    tbl_keys = function(t)
+        return pl.tablex.keys(t)
+    end,
+    tbl_extend = function(behavior, a, b)
+        if behavior == "force" then
+            return pl.tablex.union(a, b)
+        end
+        return nil
+    end,
     inspect = function(object, options)
         return pl.pretty.write(object)
     end,

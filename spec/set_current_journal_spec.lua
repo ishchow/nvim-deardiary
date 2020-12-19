@@ -44,7 +44,21 @@ describe("test set_current_journal()", function()
             },
             {
                 path = "~/journals/work",
-                frequencies = {"daily", "weekly", "monthly", "yearly"},
+                frequencies = {
+                    "daily",
+                    weekly = {
+                        transform = function(curr_date, offset)
+                            return curr_date:adddays(7 * offset)
+                        end,
+                        template = function(entry_date)
+                            return entry_date:fmt("# Week %W of %Y")
+                        end,
+                        formatpath = function(entry_date)
+                            return entry_date:fmt("%Y-%W.md")
+                        end,
+                    },
+                    "monthly",
+                    "yearly"},
             },
         }
         deardiary.set_current_journal(1)

@@ -204,4 +204,93 @@ describe("test create_diary_entry()", function()
             assert.same(contents, expected_contents)
         end)
     end)
+
+    describe("should succeed with custom config", function()
+        config.frequencies.daily.template = function(entry_date)
+            return entry_date:fmt("# %Y-%m-%d")
+        end
+
+        config.frequencies.daily.formatpath = function(entry_date)
+            return entry_date:fmt("%Y-%m-%d.md")
+        end
+
+        config.journals = {
+            {
+                path = journal_path,
+                frequencies = {
+                    "daily",
+                    monthly = {
+                        template = function(entry_date)
+                            return entry_date:fmt("# %b of %Y")
+                        end,
+                        formatpath = function(entry_date)
+                            return entry_date:fmt("%Y-%m.md")
+                        end,
+                    },
+                    biweekly = {
+                        transform = function(cdate, offset)
+                            return config.frequencies.weekly.transform(cdate, 2 * offset)
+                        end,
+                        template = function(entry_date)
+                            local bi_week_number = entry_date:getweeknumber(2) / 2
+                            local year = entry_date:getyear()
+                            return string.format("# Bi-week %d of Year %d", bi_week_number, year)
+                        end,
+                        formatpath = function(entry_date)
+                            local bi_week_number = entry_date:getweeknumber(2) / 2
+                            local year = entry_date:getyear()
+                            return string.format("%d-%d", year, bi_week_number) .. ".md"
+                        end,
+                    },
+                },
+            },
+        }
+
+        deardiary.set_current_journal(1)
+
+        it("daily", function()
+            local formatpath = config.frequencies.daily.formatpath
+            deardiary.create_diary_entry("daily", 0, curr_date)
+            local today_path = journal_path
+                .. util.get_path_sep()
+                .. "daily"
+                .. util.get_path_sep()
+                .. formatpath(date("2020-12-31"))
+            assert.is_not_nil(lfs.attributes(today_path))
+
+            local contents = pl.file.read(today_path)
+            local expected_contents = "# 2020-12-31"
+            assert.same(contents, expected_contents)
+        end)
+
+        it("monthly", function()
+            local formatpath = config.journals[1].frequencies.monthly.formatpath
+            deardiary.create_diary_entry("monthly", 0, curr_date)
+            local this_month_path = journal_path
+                .. util.get_path_sep()
+                .. "monthly"
+                .. util.get_path_sep()
+                .. formatpath(date("2020-12-01"))
+            assert.is_not_nil(lfs.attributes(this_month_path))
+
+            local contents = pl.file.read(this_month_path)
+            local expected_contents = "# Dec of 2020"
+            assert.same(contents, expected_contents)
+        end)
+
+        it("biweekly", function()
+            local formatpath = config.journals[1].frequencies.biweekly.formatpath
+            deardiary.create_diary_entry("biweekly", 1, curr_date)
+            local this_biweek_path = journal_path
+                .. util.get_path_sep()
+                .. "biweekly"
+                .. util.get_path_sep()
+                .. formatpath(date("2021-01-11"))
+            assert.is_not_nil(lfs.attributes(this_biweek_path))
+
+            local contents = pl.file.read(this_biweek_path)
+            local expected_contents = "# Bi-week 1 of Year 2021"
+            assert.same(contents, expected_contents)
+        end)
+    end)
 end)
