@@ -7,25 +7,17 @@ describe("test create_diary_entry()", function()
 
     _G.vim = require("mock.vim")
 
-    vim.cmd = function(cmd)
-        last_cmd = cmd
-
-        local echo_match = string.gmatch(cmd, "echo '(.*)'")()
-        if echo_match ~= nil then
-            return
+    vim.fn.bufnr = function(expr, create)
+        for i, v in pairs(buffers) do
+           if v.name == expr then
+               return i
+           end
         end
+        return -1
+    end
 
-        local edit_match = string.gmatch(cmd, "e (.*)")()
-        if edit_match ~= nil then
-            pl.file.write(edit_match(), "")
-            return
-        end
-
-        local b_match = string.gmatch(cmd, "b([0-9]+)")()
-        if b_match ~= nil then
-            local buf_handle = tonumber(b_match)
-            pl.file.write(buffers[buf_handle].name, vim.fn.join(buffers[buf_handle].lines, "\n"))
-        end
+    vim.fn.glob = function(expr, nosurf, list, allinks)
+        return ""
     end
 
     vim.api = {
@@ -46,6 +38,25 @@ describe("test create_diary_entry()", function()
         end,
     }
 
+    vim.cmd = function(cmd)
+        last_cmd = cmd
+
+        local echo_match = string.gmatch(cmd, "echo '(.*)'")()
+        if echo_match ~= nil then
+            return
+        end
+
+        local edit_match = string.gmatch(cmd, "e (.*)")()
+        if edit_match ~= nil then
+            local buf = vim.tbl_filter(function(b) return b.name == edit_match end, buffers)
+            if buf == nil or next(buf) == nil then
+                local b_handle = vim.api.nvim_create_buf(true, false)
+                vim.api.nvim_buf_set_name(b_handle, edit_match)
+            end
+            return
+        end
+    end
+
     local deardiary = require("deardiary")
     local util = require("deardiary.util")
     local config = require("deardiary.config")
@@ -56,6 +67,17 @@ describe("test create_diary_entry()", function()
     local cwd_parts = util.split_path(cwd)
     local journal_parts = vim.list_extend(cwd_parts, {"tmp", "journal"})
     local journal_path = util.join_path(journal_parts)
+
+    local function write_buffers()
+        for i = 1, #buffers do
+            pl.file.write(buffers[i].name, vim.fn.join(buffers[i].lines, "\n"))
+        end
+    end
+
+    before_each(function()
+        last_cmd = nil
+        buffers = {}
+    end)
 
     after_each(function()
         if pl.path.exists(journal_path) then
@@ -122,6 +144,7 @@ describe("test create_diary_entry()", function()
         it("daily", function()
             local formatpath = config.frequencies.daily.formatpath
             deardiary.create_diary_entry("daily", 0, curr_date)
+            write_buffers()
             local today_path = journal_path
                 .. util.get_path_sep()
                 .. "daily"
@@ -137,6 +160,7 @@ describe("test create_diary_entry()", function()
         it("monthly", function()
             local formatpath = config.frequencies.monthly.formatpath
             deardiary.create_diary_entry("monthly", 0, curr_date)
+            write_buffers()
             local this_month_path = journal_path
                 .. util.get_path_sep()
                 .. "monthly"
@@ -152,6 +176,7 @@ describe("test create_diary_entry()", function()
         it("yearly", function()
             local formatpath = config.frequencies.yearly.formatpath
             deardiary.create_diary_entry("yearly", 0, curr_date)
+            write_buffers()
             local this_year_path = journal_path
                 .. util.get_path_sep()
                 .. "yearly"
@@ -167,6 +192,7 @@ describe("test create_diary_entry()", function()
         it("weekly", function()
             local formatpath = config.frequencies.weekly.formatpath
             deardiary.create_diary_entry("weekly", 0, curr_date)
+            write_buffers()
             local this_week_path = journal_path
                 .. util.get_path_sep()
                 .. "weekly"
@@ -251,6 +277,7 @@ describe("test create_diary_entry()", function()
         it("daily", function()
             local formatpath = config.frequencies.daily.formatpath
             deardiary.create_diary_entry("daily", 0, curr_date)
+            write_buffers()
             local today_path = journal_path
                 .. util.get_path_sep()
                 .. "daily"
@@ -266,6 +293,7 @@ describe("test create_diary_entry()", function()
         it("monthly", function()
             local formatpath = config.journals[1].frequencies.monthly.formatpath
             deardiary.create_diary_entry("monthly", 0, curr_date)
+            write_buffers()
             local this_month_path = journal_path
                 .. util.get_path_sep()
                 .. "monthly"
@@ -281,6 +309,7 @@ describe("test create_diary_entry()", function()
         it("biweekly", function()
             local formatpath = config.journals[1].frequencies.biweekly.formatpath
             deardiary.create_diary_entry("biweekly", 1, curr_date)
+            write_buffers()
             local this_biweek_path = journal_path
                 .. util.get_path_sep()
                 .. "biweekly"

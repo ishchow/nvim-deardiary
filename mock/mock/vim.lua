@@ -20,6 +20,9 @@ return {
         end
         return nil
     end,
+    tbl_filter = function(func, t)
+        return pl.tablex.filter(t, func)
+    end,
     inspect = function(object, options)
         return pl.pretty.write(object)
     end,
