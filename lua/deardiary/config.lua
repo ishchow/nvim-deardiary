@@ -17,7 +17,11 @@ M.frequencies = {
     weekly = {
         transform = function(curr_date, offset)
             local weekday = curr_date:getweekday()
-            curr_date:adddays(2 - weekday)
+            if weekday < 2 then
+                curr_date:adddays(weekday - 7)
+            else
+                curr_date:adddays(2 - weekday)
+            end
             return curr_date:adddays(7 * offset)
         end,
         template = function(entry_date)
