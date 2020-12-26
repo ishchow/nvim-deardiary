@@ -5,19 +5,57 @@ endif
 let s:save_cpo = &cpo
 set cpo&vim
 
-command! -nargs=0 DearDiarySelectJournal lua require("deardiary").select_journal()
-command! -nargs=0 DearDiaryToday lua require("deardiary").create_diary_entry("daily", 0)
-command! -nargs=0 DearDiaryTomorrow lua require("deardiary").create_diary_entry("daily", 1)
-command! -nargs=0 DearDiaryYesterday lua require("deardiary").create_diary_entry("daily", -1)
-command! -nargs=0 DearDiaryThisWeek lua require("deardiary").create_diary_entry("weekly", 0)
-command! -nargs=0 DearDiaryNextWeek lua require("deardiary").create_diary_entry("weekly", 1)
-command! -nargs=0 DearDiaryLastWeek lua require("deardiary").create_diary_entry("weekly", -1)
-command! -nargs=0 DearDiaryThisMonth lua require("deardiary").create_diary_entry("monthly", 0)
-command! -nargs=0 DearDiaryNextMonth lua require("deardiary").create_diary_entry("monthly", 1)
-command! -nargs=0 DearDiaryLastMonth lua require("deardiary").create_diary_entry("monthly", -1)
-command! -nargs=0 DearDiaryThisYear lua require("deardiary").create_diary_entry("yearly", 0)
-command! -nargs=0 DearDiaryNextYear lua require("deardiary").create_diary_entry("yearly", 1)
-command! -nargs=0 DearDiaryLastYear lua require("deardiary").create_diary_entry("yearly", -1)
+if !exists(":DearDiarySelectJournal")
+    command -nargs=0 DearDiarySelectJournal lua require("deardiary").select_journal()
+endif
+
+if !exists(":DearDiaryToday")
+    command -nargs=0 DearDiaryToday lua require("deardiary").create_diary_entry("daily", 0)
+endif
+
+if !exists(":DearDiaryTomorrow")
+    command -nargs=0 DearDiaryTomorrow lua require("deardiary").create_diary_entry("daily", 1)
+endif
+
+if !exists(":DearDiaryYesterday")
+    command -nargs=0 DearDiaryYesterday lua require("deardiary").create_diary_entry("daily", -1)
+endif
+
+if !exists(":DearDiaryThisWeek")
+    command -nargs=0 DearDiaryThisWeek lua require("deardiary").create_diary_entry("weekly", 0)
+endif
+
+if !exists(":DearDiaryNextWeek")
+    command -nargs=0 DearDiaryNextWeek lua require("deardiary").create_diary_entry("weekly", 1)
+endif
+
+if !exists(":DearDiaryLastWeek")
+    command -nargs=0 DearDiaryLastWeek lua require("deardiary").create_diary_entry("weekly", -1)
+endif
+
+if !exists(":DearDiaryThisMonth")
+    command -nargs=0 DearDiaryThisMonth lua require("deardiary").create_diary_entry("monthly", 0)
+endif
+
+if !exists(":DearDiaryNextMonth")
+    command -nargs=0 DearDiaryNextMonth lua require("deardiary").create_diary_entry("monthly", 1)
+endif
+
+if !exists(":DearDiaryLastMonth")
+    command -nargs=0 DearDiaryLastMonth lua require("deardiary").create_diary_entry("monthly", -1)
+endif
+
+if !exists(":DearDiaryThisYear")
+    command -nargs=0 DearDiaryThisYear lua require("deardiary").create_diary_entry("yearly", 0)
+endif
+
+if !exists(":DearDiaryNextYear")
+    command -nargs=0 DearDiaryNextYear lua require("deardiary").create_diary_entry("yearly", 1)
+endif
+
+if !exists(":DearDiaryLastYear")
+    command -nargs=0 DearDiaryLastYear lua require("deardiary").create_diary_entry("yearly", -1)
+endif
 
 nmap <silent> <Plug>(DearDiarySelectJournal) <cmd>DearDiarySelectJournal<CR>
 nmap <silent> <Plug>(DearDiaryToday) <cmd>DearDiaryToday<CR>
