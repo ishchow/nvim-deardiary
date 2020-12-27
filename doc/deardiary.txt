@@ -1,0 +1,328 @@
+*deardiary.txt* Make journaling in neovim easy and convenient.
+
+==============================================================================
+CONTENTS                                                             *DearDiary*
+
+    1. Intro                    |DearDiaryIntro| 
+    2. Installation             |DearDiaryInstallation| 
+    3. Configuration            |DearDiaryConfiguration| 
+        3.1 Journals            |DearDiaryConfigurationJournals|
+        3.2 New Frequencies     |DearDiaryConfigurationNewFrequencies|
+        3.3 Override Frequencies|DearDiaryConfigurationOverrideFrequencies|
+    4. Commands and Mappings    |DearDiaryCommandsAndMappings| 
+    5. Development              *DearDiaryDevelopment* 
+    6. License                  *DearDiaryLicense*
+
+==============================================================================
+1. Intro                                                        *DearDiaryIntro*
+
+deardiary is a plugin that makes journaling in neovim easy and convenient.
+
+Features:
+- Manage multiple journals
+- Set different frequencies of entries per journal (ex. daily, weekly)
+- Custom frequencies of journal entries (ex. can add quarterly frequencies)
+- Control filesystem paths of new entries
+- Templating of new entires
+
+Requirements:
+- neovim 0.5+
+    - Currently requires latest neovim nightly since 0.5 isn't released yet
+
+==============================================================================
+2. Installation                                          *DearDiaryInstallation*
+
+deardiary can be installed just like any other neovim plugin.
+
+Plug: 
+
+```
+Plug 'ishchow/deardiary'
+```
+
+Packer:
+
+``` 
+use 'ishchow/deardiary' 
+```
+
+==============================================================================
+3. Configuration                                        *DearDiaryConfiguration*
+
+Configuration of this plugin is broken into two parts: journals and
+frequencies.
+
+Journals are distinct directories with a set of enabled frequencies. For
+example, you can different journals for your personal life and work. You could
+even have a different journal per hobby you have. At least one journal must be
+configured in order to use this plugin.
+
+Frequencies are named "objects" that configure path format and templating of a
+frequency of entry either across all journals or within a specific journal.
+Custom configuration of frequencies is completely optional if you are
+satisfied with the defaults. So you can skip sections 3.2 and 3.3.
+
+------------------------------------------------------------------------------
+3.1 Journals                                    *DearDiaryConfigurationJournals*
+
+Add the following to a file under `$XDG_CONFIG_HOME/nvim/lua` (ex.
+~/.config/nvim/lua/diary.lua)
+
+Each journal must be located under a different directory.
+
+Each journal must be configured with a set of frequencies for new entries
+within the journal.
+
+```lua
+local config = require("deardiary.config")
+
+config.journals = {
+    {
+        path = "~/journals/personal",
+        frequencies = {"daily", "weekly"},
+    },
+    {
+        path = "~/journals/work",
+        frequencies = {"daily", "weekly", "monthly", "yearly"},
+    },
+}
+```
+
+Then, in your init.vim file, add this to use your configuration:
+
+```
+lua require("diary")
+```
+
+------------------------------------------------------------------------------
+3.2 Adding Frequencies                    *DearDiaryConfigurationNewFrequencies*
+
+Add the following to the same file the journals were configured in from the
+previous section.
+
+In this example, we are going to add a quarterly frequency that will be usable
+by all journals.
+
+```lua
+config.frequencies.quarterly = {
+    transform = function(curr_date, offset)
+        -- Parameters:
+        --     curr_date: current date as an object, see
+        --                https://tieske.github.io/date/#dateObject for details
+        --                on this object
+        --     offset: number representing how offset to new entry
+        --             Note: For this frequency (quarterly) an offset of 0 is
+        --             the current quater, 1 is the next quarter, -1 is the
+        --             previous quarter and so on.
+        -- Returns:
+        --     date of new entry as an object, see
+        --     https://tieske.github.io/date/#dateObject for details about this
+        --     object
+        local quarter = (curr_date:getmonth() / 4) + 1
+        curr_date:setmonth(3 * (quarter - 1) + 1, 1)
+        return curr_date:addmonths(3 * offset)
+    end,
+    template = function(entry_date)
+        -- Parameters:
+        --     entry_date: date object representing date of new entry returned
+        --                 by transform(), see
+        --                 https://tieske.github.io/date/#dateObject for
+        --                 details on this object
+        -- Returns:
+        --     string that represents default contents of new journal entry
+        local quarter = (entry_date:getmonth() / 4) + 1
+        local year = entry_date:getyear()
+        return string.format("# Quarter %d of Year %d", quarter, year)
+    end,
+    formatpath = function(entry_date)
+        -- Parameters:
+        --     entry_date: date object representing date of new entry returned
+        --                 by transform(), see
+        --                 https://tieske.github.io/date/#dateObject for
+        --                 details on this object
+        -- Returns:
+        --     Path of new entry as a string
+        local quarter = (entry_date:getmonth() / 4) + 1
+        local year = entry_date:getyear()
+        return string.format("%d-%d", year, quarter) .. ".md"
+    end,
+}
+```
+
+To use your new frequency, first configure at least one existing journal to
+use this new frequency (see previous section). Then, type the following in
+command mode.
+
+```
+:lua require("deardiary").create_diary_entry("quarterly", 0)
+```
+
+You can create your own custom mappings and commands in your init.vim to make 
+using the new frequency easier.
+
+Additionally, we can add a new frequency that is scoped to a specific journal
+instead of globally scoped.
+
+```lua
+config.journals = {
+    ...
+    {
+        path = "~/journals/my_journal",
+        frequencies = {
+            "daily",
+            "quarterly",
+            biweekly = {
+                transform = function(cdate, offset)
+                    return config.frequencies.weekly.transform(cdate, 2 * offset)
+                end,
+                template = function(entry_date)
+                    local bi_week_number = entry_date:getweeknumber(2) / 2
+                    local year = entry_date:getyear()
+                    return string.format("# Bi-week %d of Year %d", bi_week_number, year)
+                end,
+                formatpath = function(entry_date)
+                    local bi_week_number = entry_date:getweeknumber(2) / 2
+                    local year = entry_date:getyear()
+                    return string.format("%d-%d", year, bi_week_number) .. ".md"
+                end,
+            },
+        },
+    },
+    ...
+}
+```
+
+------------------------------------------------------------------------------
+3.3 Overriding Frequencies           *DearDiaryConfigurationOverrideFrequencies*
+
+Now that you know what the format of a frequency is (see the previous section), 
+you can also easily globally override the properties of any built-in frequency 
+(daily, weekly, monthly, yearly).
+
+In this example, the template and path format of monthly entries for all
+journals are changed from their defaults.
+
+Note: Changes to the frequency only apply to newly created entries.
+
+```lua
+config.frequencies.monthly.template = function(entry_date)
+    -- Changes template string
+    return entry_date:fmt("# %b of %Y")
+end
+config.frequencies.monthly.formatpath = function(entry_date)
+    -- Puts all monthly entries in one folder instead of separating per year 
+    -- which is the default
+    return entry_date:fmt("%Y-%m.md")
+end
+```
+
+Additionally, you can also override properties of a frequency for only a
+specific journal. Any properties you don't specify will use the default
+behaviour automatically.
+
+```lua
+config.journals = {
+    ...
+    {
+        path = "~/journals/my_journal",
+        frequencies = {
+            daily = {
+                template = function(entry_date)
+                    -- Changes template string
+                    return entry_date:fmt("# %Y-%m-%d")
+                end,
+                formatpath = function(entry_date)
+                    -- Puts all daily entries in one folder instead of
+                    -- separating per year and month which is the default
+                    return entry_date:fmt("%Y-%m-%d.md")
+                end,
+            },
+            "weekly",
+        },
+    },
+    ...
+}
+```
+
+==============================================================================
+4. Commands and Mappings                          *DearDiaryCommandsAndMappings*
+
+The following commands and mappings are provided by the plugin. The mappings
+simply execute the commands and are provided for convenience.
+
+Default mappings can be overriden if a mapping to the mapping name already
+exists in your init.vim file.
+
+For example:
+
+```viml
+    nmap <silent> <Leader>ds <Plug>(DearDiarySelectJournal)
+```
+
+To completely disable all default mappings, add the following line to your
+init.vim.
+
+```viml
+    let g:deardiary_use_default_mappings = 0
+```
+
+------------------------------------------------------------------------------
+Entries of the below table have the following form.
+
+:Command | Mapping Name | Default mapping
+    Description
+
+------------------------------------------------------------------------------
+:DearDiarySelectJournal | <Plug>(DearDiarySelectJournal) | <Leader>js
+    Selects current journal
+
+:DearDiaryToday | <Plug>(DearDiaryToday) | <Leader>jdc
+    Go to entry for today
+
+:DearDiaryTomorrow | <Plug>(DearDiaryTomorrow) | <Leader>jdn
+    Go to entry for tomorrow
+
+:DearDiaryYesterday | <Plug>(DearDiaryYesterday) | <Leader>jdp
+    Go to entry for yesterday
+
+:DearDiaryThisWeek | <Plug>(DearDiaryThisWeek) | <Leader>jwc
+    Go to entry for this week
+
+:DearDiaryNextWeek | <Plug>(DearDiaryNextWeek) | <Leader>jwn
+    Go to entry for next week
+
+:DearDiaryLastWeek | <Plug>(DearDiaryLastWeek) | <Leader>jwp
+    Go to entry for last week
+
+:DearDiaryThisMonth | <Plug>(DearDiaryThisMonth) | <Leader>jmc
+    Go to entry for this month
+
+:DearDiaryNextMonth | <Plug>(DearDiaryNextMonth) | <Leader>jmn
+    Go to entry for next month
+
+:DearDiaryLastMonth | <Plug>(DearDiaryLastMonth) | <Leader>jmp
+    Go to entry for last month
+
+:DearDiaryThisYear | <Plug>(DearDiaryThisYear) | <Leader>jyc
+    Go to entry for this year
+
+:DearDiaryNextYear | <Plug>(DearDiaryNextYear) | <Leader>jyn
+    Go to entry for next year
+
+:DearDiaryLastYear | <Plug>(DearDiaryLastYear) | <Leader>jyp
+    Go to entry for last year
+
+==============================================================================
+5. Development                                            *DearDiaryDevelopment*
+
+To report issues, bugs, and to contribute new features go to:
+
+https://github.com/ishchow/deardiary
+
+==============================================================================
+6. License                                                    *DearDiaryLicense*
+
+See https://github.com/ishchow/deardiary/blob/main/LICENSE
+
+
+vim:tw=78:ts=8:ft=help:norl:

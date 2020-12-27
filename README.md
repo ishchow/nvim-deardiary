@@ -1,13 +1,116 @@
 # Overview
 
+deardiary is a plugin that makes journaling in neovim easy and convenient.
 
-# Installation
+Features:
+- Manage multiple journals
+- Set different frequencies of entries per journal (ex. daily, weekly)
+- Custom frequencies of journal entries (ex. can add quarterly frequencies)
+- Control filesystem paths of new entries
+- Templating of new entires
 
-TODO
+Requirements:
+- neovim 0.5+
+    - Currently requires latest neovim nightly since 0.5 isn't released yet
 
-# Usage
+# Quickstart
 
-TODO
+## Installation
+
+deardiary can be installed just like any other neovim plugin.
+
+Plug: 
+
+```
+Plug 'ishchow/deardiary'
+```
+
+Packer:
+
+``` 
+use 'ishchow/deardiary' 
+```
+
+## Configuration
+
+Add the following to a file under `$XDG_CONFIG_HOME/nvim/lua` (ex.
+~/.config/nvim/lua/diary.lua)
+
+```lua
+local config = require("deardiary.config")
+
+config.journals = {
+    {
+        path = "~/journals/personal",
+        frequencies = {"daily", "weekly"},
+    },
+    {
+        path = "~/journals/work",
+        frequencies = {"daily", "weekly", "monthly", "yearly"},
+    },
+}
+```
+
+Then, in your init.vim file, add this to use your configuration:
+
+```viml
+lua require("diary")
+```
+
+## Commands and Mappings
+
+Format of table:
+```viml
+:Command | Mapping Name | Default mapping
+    Description
+```
+
+Table of commands and mappings
+```viml
+:DearDiarySelectJournal | <Plug>(DearDiarySelectJournal) | <Leader>js
+    Selects current journal
+
+:DearDiaryToday | <Plug>(DearDiaryToday) | <Leader>jdc
+    Go to entry for today
+
+:DearDiaryTomorrow | <Plug>(DearDiaryTomorrow) | <Leader>jdn
+    Go to entry for tomorrow
+
+:DearDiaryYesterday | <Plug>(DearDiaryYesterday) | <Leader>jdp
+    Go to entry for yesterday
+
+:DearDiaryThisWeek | <Plug>(DearDiaryThisWeek) | <Leader>jwc
+    Go to entry for this week
+
+:DearDiaryNextWeek | <Plug>(DearDiaryNextWeek) | <Leader>jwn
+    Go to entry for next week
+
+:DearDiaryLastWeek | <Plug>(DearDiaryLastWeek) | <Leader>jwp
+    Go to entry for last week
+
+:DearDiaryThisMonth | <Plug>(DearDiaryThisMonth) | <Leader>jmc
+    Go to entry for this month
+
+:DearDiaryNextMonth | <Plug>(DearDiaryNextMonth) | <Leader>jmn
+    Go to entry for next month
+
+:DearDiaryLastMonth | <Plug>(DearDiaryLastMonth) | <Leader>jmp
+    Go to entry for last month
+
+:DearDiaryThisYear | <Plug>(DearDiaryThisYear) | <Leader>jyc
+    Go to entry for this year
+
+:DearDiaryNextYear | <Plug>(DearDiaryNextYear) | <Leader>jyn
+    Go to entry for next year
+
+:DearDiaryLastYear | <Plug>(DearDiaryLastYear) | <Leader>jyp
+    Go to entry for last year
+```
+
+## Documentation
+
+Open the [help file](https://github.com/ishchow/deardiary/blob/main/doc/deardiary.txt)
+for complete documentation.
 
 # Contributing
 
