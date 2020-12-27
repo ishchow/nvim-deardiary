@@ -256,14 +256,14 @@ exists in your init.vim file.
 For example:
 
 ```viml
-    nmap <silent> <Leader>ds <Plug>(DearDiarySelectJournal)
+nmap <silent> <Leader>ds <Plug>(DearDiarySelectJournal)
 ```
 
 To completely disable all default mappings, add the following line to your
 init.vim.
 
 ```viml
-    let g:deardiary_use_default_mappings = 0
+let g:deardiary_use_default_mappings = 0
 ```
 
 ------------------------------------------------------------------------------
