@@ -58,14 +58,9 @@ lua require("diary")
 ```
 
 ## Commands and Mappings
+The following commands and mappings are provided by the plugin. The mappings
+simply execute the commands and are provided for convenience.
 
-Format of table:
-```viml
-:Command | Mapping Name | Default mapping
-    Description
-```
-
-Table of commands and mappings
 ```viml
 :DearDiarySelectJournal | <Plug>(DearDiarySelectJournal) | <Leader>js
     Selects current journal
@@ -105,6 +100,22 @@ Table of commands and mappings
 
 :DearDiaryLastYear | <Plug>(DearDiaryLastYear) | <Leader>jyp
     Go to entry for last year
+```
+
+Default mappings can be overriden if a mapping to the mapping name already
+exists in your init.vim file.
+
+For example:
+
+```viml
+    nmap <silent> <Leader>ds <Plug>(DearDiarySelectJournal)
+```
+
+To completely disable all default mappings, add the following line to your
+init.vim.
+
+```viml
+    let g:deardiary_use_default_mappings = 0
 ```
 
 ## Documentation

@@ -267,12 +267,6 @@ init.vim.
 ```
 
 ------------------------------------------------------------------------------
-Entries of the below table have the following form.
-
-:Command | Mapping Name | Default mapping
-    Description
-
-------------------------------------------------------------------------------
 :DearDiarySelectJournal | <Plug>(DearDiarySelectJournal) | <Leader>js
     Selects current journal
 
