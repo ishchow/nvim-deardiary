@@ -61,7 +61,7 @@ lua require("diary")
 The following commands and mappings are provided by the plugin. The mappings
 simply execute the commands and are provided for convenience.
 
-```viml
+```vimhelp
 :DearDiarySelectJournal | <Plug>(DearDiarySelectJournal) | <Leader>js
     Selects current journal
 
