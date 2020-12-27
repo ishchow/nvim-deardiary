@@ -121,7 +121,8 @@ let g:deardiary_use_default_mappings = 0
 ## Documentation
 
 Open the [help file](https://github.com/ishchow/deardiary/blob/main/doc/deardiary.txt)
-for complete documentation.
+for complete documentation. Help file contains examples of advanced
+configuration such as custom frequencies and templating.
 
 # Contributing
 
