@@ -9,9 +9,10 @@ CONTENTS                                                             *DearDiary*
         3.1 Journals            |DearDiaryConfigurationJournals|
         3.2 New Frequencies     |DearDiaryConfigurationNewFrequencies|
         3.3 Override Frequencies|DearDiaryConfigurationOverrideFrequencies|
-    4. Commands and Mappings    |DearDiaryCommandsAndMappings| 
-    5. Development              |DearDiaryDevelopment|
-    6. License                  |DearDiaryLicense|
+    4. Usage                    |DearDiaryUsage|
+    5. Commands and Mappings    |DearDiaryCommandsAndMappings| 
+    6. Development              |DearDiaryDevelopment|
+    7. License                  |DearDiaryLicense|
 
 ==============================================================================
 1. Intro                                                        *DearDiaryIntro*
@@ -245,7 +246,39 @@ config.journals = {
 ```
 
 ==============================================================================
-4. Commands and Mappings                          *DearDiaryCommandsAndMappings*
+4. Usage                                                        *DearDiaryUsage*
+
+Run the following command to set the active journal from `config.journals`.
+
+`:DearDiarySelectJournal` or `<Leader>js`.
+
+A menu will open up like this:
+
+```
+1    ~/journals/personal
+2    ~/journals/work
+Type in journal index and press <Enter> (empty cancels): 
+```
+
+Enter a number to pick the desired journal.
+
+Then, open todays entry using:
+
+`:DearDiaryToday` or `<Leader>jdc`.
+
+Today's entry will be opened in a new buffer and filled with the contents from
+a template.
+
+`# Saturday, December 26, 2020`
+
+Save the file and the contents of this buffer will be saved to:
+
+`~/journals/personal/daily/2020/12/26.md`
+
+Full list of commands and mappings are listed below.
+
+==============================================================================
+5. Commands and Mappings                          *DearDiaryCommandsAndMappings*
 
 The following commands and mappings are provided by the plugin. The mappings
 simply execute the commands and are provided for convenience.
@@ -307,14 +340,14 @@ let g:deardiary_use_default_mappings = 0
     Go to entry for last year
 
 ==============================================================================
-5. Development                                            *DearDiaryDevelopment*
+6. Development                                            *DearDiaryDevelopment*
 
 To report issues, bugs, and to contribute new features go to:
 
 https://github.com/ishchow/deardiary
 
 ==============================================================================
-6. License                                                    *DearDiaryLicense*
+7. License                                                    *DearDiaryLicense*
 
 See https://github.com/ishchow/deardiary/blob/main/LICENSE
 

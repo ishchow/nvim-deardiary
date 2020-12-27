@@ -57,6 +57,37 @@ Then, in your init.vim file, add this to use your configuration:
 lua require("diary")
 ```
 
+## Usage
+
+Run the following command to set the active journal from `config.journals`.
+
+`:DearDiarySelectJournal` or `<Leader>js`.
+
+A menu will open up like this:
+
+```
+1    ~/journals/personal
+2    ~/journals/work
+Type in journal index and press <Enter> (empty cancels): 
+```
+
+Enter a number to pick the desired journal.
+
+Then, open todays entry using:
+
+`:DearDiaryToday` or `<Leader>jdc`.
+
+Today's entry will be opened in a new buffer and filled with the contents from
+a template.
+
+`# Saturday, December 26, 2020`
+
+Save the file and the contents of this buffer will be saved to:
+
+`~/journals/personal/daily/2020/12/26.md`
+
+Full list of commands and mappings are listed below.
+
 ## Commands and Mappings
 The following commands and mappings are provided by the plugin. The mappings
 simply execute the commands and are provided for convenience.
