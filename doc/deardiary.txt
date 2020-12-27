@@ -10,8 +10,8 @@ CONTENTS                                                             *DearDiary*
         3.2 New Frequencies     |DearDiaryConfigurationNewFrequencies|
         3.3 Override Frequencies|DearDiaryConfigurationOverrideFrequencies|
     4. Commands and Mappings    |DearDiaryCommandsAndMappings| 
-    5. Development              *DearDiaryDevelopment* 
-    6. License                  *DearDiaryLicense*
+    5. Development              |DearDiaryDevelopment|
+    6. License                  |DearDiaryLicense|
 
 ==============================================================================
 1. Intro                                                        *DearDiaryIntro*
