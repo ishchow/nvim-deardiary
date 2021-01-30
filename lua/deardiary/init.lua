@@ -4,6 +4,8 @@ local date = require("deardiary.lib.date")
 
 local M = {}
 
+M.current_journal = nil
+
 M.get_date = function(offset, frequency, curr_date)
     assert(type(offset) == "number", "offset should be a number")
     assert(type(frequency) == "table", "frequency should be a table")
@@ -20,7 +22,7 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
         return
     end
 
-    local journal = vim.g.deardiary_current_journal
+    local journal = M.current_journal
     if journal == nil then
         vim.cmd("echo 'No journal set'")
         return
@@ -31,7 +33,7 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
         config_freq = {}
     end
 
-    local journal_freq = vim.g.deardiary_current_journal.frequencies[frequency_name]
+    local journal_freq = M.current_journal.frequencies[frequency_name]
     if journal_freq == nil then
         journal_freq = {}
     end
@@ -86,7 +88,7 @@ M.set_current_journal = function(journal_index)
         vim.cmd("echo 'Invalid journal index'")
         return
     end
-    vim.g.deardiary_current_journal = journal
+    M.current_journal = journal
 end
 
 M.select_journal = function()
@@ -96,7 +98,7 @@ M.select_journal = function()
     end
 
     for idx, journal in pairs(config.journals) do
-        if vim.deep_equal(journal, vim.g.deardiary_current_journal) then
+        if vim.deep_equal(journal, M.current_journal) then
             vim.cmd("echohl PmenuSel")
         else
             vim.cmd("echohl None")

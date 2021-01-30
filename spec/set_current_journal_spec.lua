@@ -5,13 +5,13 @@ describe("test set_current_journal()", function()
     local config = require("deardiary.config")
 
     before_each(function()
-        vim.g.deardiary_current_journal = nil
+        deardiary.current_journal = nil
     end)
 
     it("no journals configured", function()
         config.journals = {}
         deardiary.set_current_journal(1)
-        assert.is_nil(vim.g.deardiary_current_journal)
+        assert.is_nil(deardiary.current_journal)
     end)
 
     it("invalid journal index", function()
@@ -27,13 +27,13 @@ describe("test set_current_journal()", function()
         }
 
         deardiary.set_current_journal(-1)
-        assert.is_nil(vim.g.deardiary_current_journal)
+        assert.is_nil(deardiary.current_journal)
 
         deardiary.set_current_journal(0)
-        assert.is_nil(vim.g.deardiary_current_journal)
+        assert.is_nil(deardiary.current_journal)
 
         deardiary.set_current_journal(3)
-        assert.is_nil(vim.g.deardiary_current_journal)
+        assert.is_nil(deardiary.current_journal)
     end)
 
     it("valid journals", function()
@@ -62,12 +62,12 @@ describe("test set_current_journal()", function()
             },
         }
         deardiary.set_current_journal(1)
-        assert.same(vim.g.deardiary_current_journal, config.journals[1])
+        assert.same(deardiary.current_journal, config.journals[1])
 
         deardiary.set_current_journal(2)
-        assert.same(vim.g.deardiary_current_journal, config.journals[2])
+        assert.same(deardiary.current_journal, config.journals[2])
 
         deardiary.set_current_journal(1)
-        assert.same(vim.g.deardiary_current_journal, config.journals[1])
+        assert.same(deardiary.current_journal, config.journals[1])
     end)
 end)
