@@ -39,13 +39,13 @@ deardiary can be installed just like any other neovim plugin.
 Plug: 
 
 ```
-Plug 'ishchow/deardiary'
+Plug 'ishchow/nvim-deardiary'
 ```
 
 Packer:
 
 ``` 
-use 'ishchow/deardiary' 
+use 'ishchow/nvim-deardiary'
 ```
 
 ==============================================================================
