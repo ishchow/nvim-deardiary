@@ -179,7 +179,13 @@ configuration such as custom frequencies and templating.
 
 `nvim --cmd "set rtp+=$(pwd)" README.md`
 
-## Setup hererocks
+## Unit testing
+
+### Setup hererocks
+
+Setup an isolated lua environment using [hererocks](https://github.com/mpeterv/hererocks).
+This is done so that your system lua isn't polluted with rocks used to test this
+plugin.
 
 ```
 pip3 install hererocks # use sudo if this doesn't work
@@ -187,7 +193,7 @@ hererocks -j 2.1.0-beta3 -r latest env
 source env/bin/activate
 ```
 
-## Run tests
+### Run tests
 
 Installs test dependencies if not already installed and runs unit tests.
 
@@ -198,6 +204,8 @@ tests or you can run tests directly using busted.
 
 `busted`
 
-## Deactivate hererocks
+### Deactivate hererocks
+
+Deactivate the lua environment.
 
 `lua-deactivate`
