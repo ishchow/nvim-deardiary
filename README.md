@@ -86,7 +86,7 @@ Save the file and the contents of this buffer will be saved to:
 
 `~/journals/personal/daily/2020/12/26.md`
 
-## Set current journal based on cwd
+### Set current journal based on cwd
 If the current working directory has a common path prefix with any of the
 configured journals, you can automatically using this command:
 
