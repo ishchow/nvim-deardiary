@@ -9,6 +9,10 @@ if !exists(":DearDiarySelectJournal")
     command -nargs=0 DearDiarySelectJournal lua require("deardiary").select_journal()
 endif
 
+if !exists(":DearDiarySetCurrentJournalCwd")
+    command -nargs=0 DearDiarySetCurrentJournalCwd lua require("deardiary").set_current_journal_cwd()
+endif
+
 if !exists(":DearDiaryToday")
     command -nargs=0 DearDiaryToday lua require("deardiary").create_diary_entry("daily", 0)
 endif
@@ -58,6 +62,7 @@ if !exists(":DearDiaryLastYear")
 endif
 
 nmap <silent> <Plug>(DearDiarySelectJournal) <cmd>DearDiarySelectJournal<CR>
+nmap <silent> <Plug>(DearDiarySetCurrentJournalCwd) <cmd>DearDiarySetCurrentJournalCwd<CR>
 nmap <silent> <Plug>(DearDiaryToday) <cmd>DearDiaryToday<CR>
 nmap <silent> <Plug>(DearDiaryTomorrow) <cmd>DearDiaryTomorrow<CR>
 nmap <silent> <Plug>(DearDiaryYesterday) <cmd>DearDiaryYesterday<CR>
@@ -78,6 +83,10 @@ endif
 if g:deardiary_use_default_mappings
     if !hasmapto("<Plug>(DearDiarySelectJournal)")
         nmap <silent> <Leader>js <Plug>(DearDiarySelectJournal)
+    endif
+
+    if !hasmapto("<Plug>(DearDiarySetCurrentJournalCwd)")
+        nmap <silent> <Leader>jsc <Plug>(DearDiarySetCurrentJournalCwd)
     endif
 
     if !hasmapto("<Plug>(DearDiaryToday)")

@@ -10,6 +10,7 @@ CONTENTS                                                             *DearDiary*
         3.2 New Frequencies     |DearDiaryConfigurationNewFrequencies|
         3.3 Override Frequencies|DearDiaryConfigurationOverrideFrequencies|
     4. Usage                    |DearDiaryUsage|
+        4.1 Set current journal on cwd  |DearDiaryUsageSetCurrentJournalCwd|
     5. Commands and Mappings    |DearDiaryCommandsAndMappings| 
     6. Development              |DearDiaryDevelopment|
     7. License                  |DearDiaryLicense|
@@ -67,7 +68,9 @@ satisfied with the defaults. So you can skip sections 3.2 and 3.3.
 3.1 Journals                                    *DearDiaryConfigurationJournals*
 
 Add the following to a file under `$XDG_CONFIG_HOME/nvim/lua` (ex.
-~/.config/nvim/lua/diary.lua)
+~/.config/nvim/lua/diary.lua). Don't name the file deardiary.lua though, not
+sure how that will affect module importing since the plugin is also called
+deardiary.
 
 Each journal must be located under a different directory.
 
@@ -275,7 +278,23 @@ Save the file and the contents of this buffer will be saved to:
 
 `~/journals/personal/daily/2020/12/26.md`
 
-Full list of commands and mappings are listed below.
+------------------------------------------------------------------------------
+4.1 Set current journal on cwd              |DearDiaryUsageSetCurrentJournalCwd|
+
+If the current working directory has a common path prefix with any of the
+configured journals, you can automatically using this command:
+
+`:DearDiarySetCurrentJournalCwd` or `<Leader>jsc`
+
+To automatically set the current journal based on the current working
+directory upon entering vim, add the folliing to your init.vim:
+
+```viml
+augroup deardiary
+    autocmd!
+    autocmd VimEnter * lua require("deardiary").set_current_journal_cwd()
+augroup end
+```
 
 ==============================================================================
 5. Commands and Mappings                          *DearDiaryCommandsAndMappings*
@@ -302,6 +321,10 @@ let g:deardiary_use_default_mappings = 0
 ------------------------------------------------------------------------------
 :DearDiarySelectJournal | <Plug>(DearDiarySelectJournal) | <Leader>js
     Selects current journal
+
+:DearDiarySetCurrentJournalCwd | <Plug>(DearDiarySetCurrentJournalCwd) |
+<Leader>jsc
+    Sets the current journal based on the current working directory
 
 :DearDiaryToday | <Plug>(DearDiaryToday) | <Leader>jdc
     Go to entry for today

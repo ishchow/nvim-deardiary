@@ -58,7 +58,7 @@ lua require("diary")
 ```
 
 ## Usage
-
+### Basic Usage
 Run the following command to set the active journal from `config.journals`.
 
 `:DearDiarySelectJournal` or `<Leader>js`.
@@ -86,7 +86,21 @@ Save the file and the contents of this buffer will be saved to:
 
 `~/journals/personal/daily/2020/12/26.md`
 
-Full list of commands and mappings are listed below.
+## Set current journal based on cwd
+If the current working directory has a common path prefix with any of the
+configured journals, you can automatically using this command:
+
+`:DearDiarySetCurrentJournalCwd` or `<Leader>jsc`
+
+To automatically set the current journal based on the current working
+directory upon entering vim, add the following to your init.vim:
+
+```viml
+augroup deardiary
+    autocmd!
+    autocmd VimEnter * lua require("deardiary").set_current_journal_cwd()
+augroup end
+```
 
 ## Commands and Mappings
 The following commands and mappings are provided by the plugin. The mappings
@@ -95,6 +109,10 @@ simply execute the commands and are provided for convenience.
 ```vimhelp
 :DearDiarySelectJournal | <Plug>(DearDiarySelectJournal) | <Leader>js
     Selects current journal
+
+:DearDiarySetCurrentJournalCwd | <Plug>(DearDiarySetCurrentJournalCwd) |
+<Leader>jsc
+    Sets the current journal based on the current working directory
 
 :DearDiaryToday | <Plug>(DearDiaryToday) | <Leader>jdc
     Go to entry for today
@@ -183,4 +201,3 @@ tests or you can run tests directly using busted.
 ## Deactivate hererocks
 
 `lua-deactivate`
-

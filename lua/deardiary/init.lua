@@ -123,4 +123,14 @@ M.select_journal = function()
     end
 end
 
+M.set_current_journal_cwd = function()
+    local cwd = vim.fn.getcwd() .. util.get_path_sep()
+    for _, journal in pairs(config.journals) do
+        local journal_path = vim.fn.expand(journal.path) .. util.get_path_sep()
+        if vim.startswith(cwd, journal_path) then
+            M.current_journal = journal
+        end
+    end
+end
+
 return M

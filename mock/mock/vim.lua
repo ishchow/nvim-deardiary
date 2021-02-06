@@ -3,7 +3,7 @@ local pl = require'pl.import_into'()
 return {
     cmd = function(cmd)
     end,
-    list_extend = function(dst, src, start, finish)
+    list_extend = function(dst, src)
         pl.tablex.insertvalues(dst, src)
         return dst
     end,
@@ -23,8 +23,11 @@ return {
     tbl_filter = function(func, t)
         return pl.tablex.filter(t, func)
     end,
-    inspect = function(object, options)
+    inspect = function(object)
         return pl.pretty.write(object)
+    end,
+    startswith = function(s, prefix)
+        return pl.stringx.startswith(s, prefix)
     end,
     fn = {
         split = pl.stringx.split,
@@ -41,10 +44,10 @@ return {
             }
             return d[h]
         end,
-        mkdir = function(name, path, prot)
+        mkdir = function(name)
             pl.dir.makepath(name)
         end,
-        expand = function(expr, nosurf, list)
+        expand = function(expr)
             return pl.path.expanduser(expr)
         end,
     },
