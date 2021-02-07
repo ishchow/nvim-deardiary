@@ -112,8 +112,7 @@ simply execute the commands and are provided for convenience.
 :DearDiarySelectJournal | <Plug>(DearDiarySelectJournal) | <Leader>js
     Selects current journal
 
-:DearDiarySetCurrentJournalCwd | <Plug>(DearDiarySetCurrentJournalCwd) |
-<Leader>jsc
+:DearDiarySetCurrentJournalCwd | <Plug>(DearDiarySetCurrentJournalCwd) | <Leader>jsc
     Sets the current journal based on the current working directory
 
 :DearDiaryToday | <Plug>(DearDiaryToday) | <Leader>jdc
