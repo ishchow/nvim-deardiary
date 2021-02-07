@@ -17,16 +17,25 @@ jobs:
     runs-on: ${{ matrix.os  }}
 
     steps:
-      - uses: actions/checkout@v2
-      
       - uses: actions/setup-python@v2
         with:
           python-version: '3.x'
           architecture: 'x64'
 
-      - name: Setup hererocks and run tests
+      - uses: actions/checkout@v2
+
+      - name: Setup hererocks and run tests (Linux/Mac)
+        if: matrix.os != 'windows-latest'
         run: |
           pip3 install hererocks
           hererocks -j 2.1.0-beta3 -r latest env
           source env/bin/activate
+          luarocks test
+
+      - name: Setup hererocks and run tests (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          pip3 install hererocks
+          hererocks -j 2.1.0-beta3 -r latest env
+          env/bin/activate.bat
           luarocks test
