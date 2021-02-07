@@ -1,4 +1,4 @@
-name: CI
+name: ci
 
 on:
   push:
@@ -20,11 +20,9 @@ jobs:
           python-version: '3.x'
           architecture: 'x64'
 
-      - name: Install and setup hererocks
+      - name: Setup hererocks and run tests
         run: |
           pip3 install hererocks
           hererocks -j 2.1.0-beta3 -r latest env
           source env/bin/activate
-
-      - name: Run tests
-        run: luarocks test
+          luarocks test
