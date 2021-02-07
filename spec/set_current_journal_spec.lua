@@ -1,4 +1,5 @@
 describe("test set_current_journal()", function()
+    -- Setup mock vim module before we require deardiary modules
     _G.vim = require("mock.vim")
 
     local deardiary = require("deardiary")

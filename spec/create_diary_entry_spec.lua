@@ -5,6 +5,7 @@ describe("test create_diary_entry()", function()
     local last_cmd
     local buffers = {}
 
+    -- Setup mock vim module before we require deardiary modules
     _G.vim = require("mock.vim")
 
     vim.fn.bufnr = function(expr, create)

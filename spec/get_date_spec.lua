@@ -1,4 +1,5 @@
 describe("test deardiary.get_date()", function()
+    -- Setup mock vim module before we require deardiary modules
     _G.vim = require("mock.vim")
 
     local config = require("deardiary.config")

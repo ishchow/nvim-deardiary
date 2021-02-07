@@ -2,6 +2,7 @@ describe("test set_current_journal()", function()
     local lfs = require("lfs")
     local pl = require"pl.import_into"()
 
+    -- Setup mock vim module before we require deardiary modules
     _G.vim = require("mock.vim")
 
     local journal_path = pl.path.join(lfs.currentdir(), "tmp", "journal2")
