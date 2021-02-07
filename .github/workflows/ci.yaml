@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+
+      - name: Install and setup hererocks
+        run: |
+          pip3 install hererocks
+          hererocks -j 2.1.0-beta3 -r latest env
+          source env/bin/activate
+
+      - name: Run tests
+        run: luarocks test
