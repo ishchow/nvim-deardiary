@@ -176,6 +176,20 @@ configuration such as custom frequencies and templating.
 
 # Contributing
 
+## Repo structure
+
+```
+.
+├── doc # NeoVim built-in help files
+├── lua # Plugin lua modules
+│   └── deardiary # Lua module containing plugin
+│       └── lib # Lua module containing vendored, external libraries
+├── mock # Lua modules containng mocks for unit test
+│   └── mock # Mock lua module
+├── plugin # Vimscript runtime files, provides glue code for mappings and commands
+└── spec # Unit tests
+```
+
 ## Testing plugin locally
 
 `nvim --cmd "set rtp+=$(pwd)" README.md`
