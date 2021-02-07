@@ -1,3 +1,5 @@
+![ci](https://github.com/ishchow/nvim-deardiary/workflows/ci/badge.svg)
+
 # Overview
 
 deardiary is a plugin that makes journaling in neovim easy and convenient.
