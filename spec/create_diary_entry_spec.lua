@@ -63,10 +63,7 @@ describe("test create_diary_entry()", function()
     local date = require("deardiary.lib.date")
 
     local curr_date = date("2020-12-31")
-    local cwd = lfs.currentdir()
-    local cwd_parts = util.split_path(cwd)
-    local journal_parts = vim.list_extend(cwd_parts, {"tmp", "journal"})
-    local journal_path = util.join_path(journal_parts)
+    local journal_path = pl.path.join(lfs.currentdir(), "tmp", "journal")
 
     local function write_buffers()
         for i = 1, #buffers do
@@ -145,11 +142,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.frequencies.daily.formatpath
             deardiary.create_diary_entry("daily", 0, curr_date)
             write_buffers()
-            local today_path = journal_path
-                .. util.get_path_sep()
-                .. "daily"
-                .. util.get_path_sep()
-                .. formatpath(date("2020-12-31"))
+            local today_path = pl.path.join(journal_path,"daily",formatpath(date("2020-12-31")))
             assert.is_not_nil(lfs.attributes(today_path))
 
             local contents = pl.file.read(today_path)
@@ -161,11 +154,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.frequencies.monthly.formatpath
             deardiary.create_diary_entry("monthly", 0, curr_date)
             write_buffers()
-            local this_month_path = journal_path
-                .. util.get_path_sep()
-                .. "monthly"
-                .. util.get_path_sep()
-                .. formatpath(date("2020-12-01"))
+            local this_month_path = pl.path.join(journal_path,"monthly",formatpath(date("2020-12-01")))
             assert.is_not_nil(lfs.attributes(this_month_path))
 
             local contents = pl.file.read(this_month_path)
@@ -177,11 +166,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.frequencies.yearly.formatpath
             deardiary.create_diary_entry("yearly", 0, curr_date)
             write_buffers()
-            local this_year_path = journal_path
-                .. util.get_path_sep()
-                .. "yearly"
-                .. util.get_path_sep()
-                .. formatpath(date("2020-01-01"))
+            local this_year_path = pl.path.join(journal_path,"yearly",formatpath(date("2020-01-01")))
             assert.is_not_nil(lfs.attributes(this_year_path))
 
             local contents = pl.file.read(this_year_path)
@@ -193,40 +178,11 @@ describe("test create_diary_entry()", function()
             local formatpath = config.frequencies.weekly.formatpath
             deardiary.create_diary_entry("weekly", 0, curr_date)
             write_buffers()
-            local this_week_path = journal_path
-                .. util.get_path_sep()
-                .. "weekly"
-                .. util.get_path_sep()
-                .. formatpath(date("2020-12-28"))
+            local this_week_path = pl.path.join(journal_path,"weekly",formatpath(date("2020-12-28")))
             assert.is_not_nil(lfs.attributes(this_week_path))
 
             local contents = pl.file.read(this_week_path)
-            local expected_contents = [[# Week 52 of 2020: Monday, December 28, 2020 - Sunday, January 03, 2021
-
-
-## Monday, December 28, 2020
-
-
-## Tuesday, December 29, 2020
-
-
-## Wednesday, December 30, 2020
-
-
-## Thursday, December 31, 2020
-
-
-## Friday, January 01, 2021
-
-
-## Saturday, January 02, 2021
-
-
-## Sunday, January 03, 2021
-
-
-]]
-
+            local expected_contents = "# Week 52 of 2020: Monday, December 28, 2020 - Sunday, January 03, 2021"
             assert.same(contents, expected_contents)
         end)
     end)
@@ -278,11 +234,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.frequencies.daily.formatpath
             deardiary.create_diary_entry("daily", 0, curr_date)
             write_buffers()
-            local today_path = journal_path
-                .. util.get_path_sep()
-                .. "daily"
-                .. util.get_path_sep()
-                .. formatpath(date("2020-12-31"))
+            local today_path = pl.path.join(journal_path,"daily",formatpath(date("2020-12-31")))
             assert.is_not_nil(lfs.attributes(today_path))
 
             local contents = pl.file.read(today_path)
@@ -294,11 +246,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.journals[1].frequencies.monthly.formatpath
             deardiary.create_diary_entry("monthly", 0, curr_date)
             write_buffers()
-            local this_month_path = journal_path
-                .. util.get_path_sep()
-                .. "monthly"
-                .. util.get_path_sep()
-                .. formatpath(date("2020-12-01"))
+            local this_month_path = pl.path.join(journal_path,"monthly",formatpath(date("2020-12-01")))
             assert.is_not_nil(lfs.attributes(this_month_path))
 
             local contents = pl.file.read(this_month_path)
@@ -310,11 +258,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.journals[1].frequencies.biweekly.formatpath
             deardiary.create_diary_entry("biweekly", 1, curr_date)
             write_buffers()
-            local this_biweek_path = journal_path
-                .. util.get_path_sep()
-                .. "biweekly"
-                .. util.get_path_sep()
-                .. formatpath(date("2021-01-11"))
+            local this_biweek_path = pl.path.join(journal_path,"biweekly",formatpath(date("2021-01-11")))
             assert.is_not_nil(lfs.attributes(this_biweek_path))
 
             local contents = pl.file.read(this_biweek_path)

@@ -25,21 +25,10 @@ M.frequencies = {
             return curr_date:adddays(7 * offset)
         end,
         template = function(entry_date)
-            local dates = {}
-            for i = 0, 6 do
-                table.insert(dates, entry_date:copy():adddays(i))
-            end
-            local lines = {}
-            local header = entry_date:fmt("# Week %W of %Y: ")
-                .. dates[1]:fmt("%A, %B %d, %Y - ")
-                .. dates[7]:fmt("%A, %B %d, %Y")
-            table.insert(lines, header)
-            table.insert(lines, "\n")
-            for i = 1, #dates do
-                table.insert(lines, dates[i]:fmt("## %A, %B %d, %Y"))
-                table.insert(lines, "\n")
-            end
-            return vim.fn.join(lines, "\n") .. "\n"
+            local week_end_date = entry_date:copy():adddays(6)
+            return entry_date:fmt("# Week %W of %Y: ")
+                .. entry_date:fmt("%A, %B %d, %Y - ")
+                .. week_end_date:fmt("%A, %B %d, %Y")
         end,
         formatpath = function(entry_date)
             return entry_date:fmt(util.join_path({"%Y", "%W.md"}))
