@@ -53,7 +53,6 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
     end
 
     local parts = util.split_path(journal.path)
-    table.insert(parts, frequency_name)
 
     local entry_date = M.get_date(offset, frequency, curr_date:copy())
     local entry_path = frequency.formatpath(entry_date:copy())

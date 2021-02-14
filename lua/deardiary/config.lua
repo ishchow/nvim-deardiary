@@ -11,7 +11,7 @@ M.frequencies = {
             return entry_date:fmt("# %A, %B %d, %Y")
         end,
         formatpath = function(entry_date)
-            return entry_date:fmt(util.join_path({"%Y", "%m", "%d.md"}))
+            return entry_date:fmt(util.join_path({"daily", "%Y", "%m", "%d.md"}))
         end
     },
     weekly = {
@@ -31,7 +31,7 @@ M.frequencies = {
                 .. week_end_date:fmt("%A, %B %d, %Y")
         end,
         formatpath = function(entry_date)
-            return entry_date:fmt(util.join_path({"%Y", "%W.md"}))
+            return entry_date:fmt(util.join_path({"weekly", "%Y", "%W.md"}))
         end,
     },
     monthly = {
@@ -43,7 +43,7 @@ M.frequencies = {
             return entry_date:fmt("# %B, %Y")
         end,
         formatpath = function(entry_date)
-            return entry_date:fmt(util.join_path({"%Y", "%m.md"}))
+            return entry_date:fmt(util.join_path({"monthly" ,"%Y", "%m.md"}))
         end,
     },
     yearly = {
@@ -55,7 +55,7 @@ M.frequencies = {
             return entry_date:fmt("# %Y")
         end,
         formatpath = function(entry_date)
-            return entry_date:fmt("%Y.md")
+            return entry_date:fmt(util.join_path({"yearly", "%Y.md"}))
         end
     },
 }

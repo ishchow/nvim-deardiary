@@ -143,7 +143,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.frequencies.daily.formatpath
             deardiary.create_diary_entry("daily", 0, curr_date)
             write_buffers()
-            local today_path = pl.path.join(journal_path,"daily",formatpath(date("2020-12-31")))
+            local today_path = pl.path.join(journal_path, formatpath(date("2020-12-31")))
             assert.is_not_nil(lfs.attributes(today_path))
 
             local contents = pl.file.read(today_path)
@@ -155,7 +155,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.frequencies.monthly.formatpath
             deardiary.create_diary_entry("monthly", 0, curr_date)
             write_buffers()
-            local this_month_path = pl.path.join(journal_path,"monthly",formatpath(date("2020-12-01")))
+            local this_month_path = pl.path.join(journal_path, formatpath(date("2020-12-01")))
             assert.is_not_nil(lfs.attributes(this_month_path))
 
             local contents = pl.file.read(this_month_path)
@@ -167,7 +167,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.frequencies.yearly.formatpath
             deardiary.create_diary_entry("yearly", 0, curr_date)
             write_buffers()
-            local this_year_path = pl.path.join(journal_path,"yearly",formatpath(date("2020-01-01")))
+            local this_year_path = pl.path.join(journal_path, formatpath(date("2020-01-01")))
             assert.is_not_nil(lfs.attributes(this_year_path))
 
             local contents = pl.file.read(this_year_path)
@@ -179,7 +179,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.frequencies.weekly.formatpath
             deardiary.create_diary_entry("weekly", 0, curr_date)
             write_buffers()
-            local this_week_path = pl.path.join(journal_path,"weekly",formatpath(date("2020-12-28")))
+            local this_week_path = pl.path.join(journal_path, formatpath(date("2020-12-28")))
             assert.is_not_nil(lfs.attributes(this_week_path))
 
             local contents = pl.file.read(this_week_path)
@@ -222,7 +222,8 @@ describe("test create_diary_entry()", function()
                         formatpath = function(entry_date)
                             local bi_week_number = entry_date:getweeknumber(2) / 2
                             local year = entry_date:getyear()
-                            return string.format("%d-%d", year, bi_week_number) .. ".md"
+                            local filename = string.format("%d-%d.md", year, bi_week_number)
+                            return util.join_path({"biweekly", filename})
                         end,
                     },
                 },
@@ -235,7 +236,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.frequencies.daily.formatpath
             deardiary.create_diary_entry("daily", 0, curr_date)
             write_buffers()
-            local today_path = pl.path.join(journal_path,"daily",formatpath(date("2020-12-31")))
+            local today_path = pl.path.join(journal_path, formatpath(date("2020-12-31")))
             assert.is_not_nil(lfs.attributes(today_path))
 
             local contents = pl.file.read(today_path)
@@ -247,7 +248,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.journals[1].frequencies.monthly.formatpath
             deardiary.create_diary_entry("monthly", 0, curr_date)
             write_buffers()
-            local this_month_path = pl.path.join(journal_path,"monthly",formatpath(date("2020-12-01")))
+            local this_month_path = pl.path.join(journal_path, formatpath(date("2020-12-01")))
             assert.is_not_nil(lfs.attributes(this_month_path))
 
             local contents = pl.file.read(this_month_path)
@@ -259,7 +260,7 @@ describe("test create_diary_entry()", function()
             local formatpath = config.journals[1].frequencies.biweekly.formatpath
             deardiary.create_diary_entry("biweekly", 1, curr_date)
             write_buffers()
-            local this_biweek_path = pl.path.join(journal_path,"biweekly",formatpath(date("2021-01-11")))
+            local this_biweek_path = pl.path.join(journal_path, formatpath(date("2021-01-11")))
             assert.is_not_nil(lfs.attributes(this_biweek_path))
 
             local contents = pl.file.read(this_biweek_path)
