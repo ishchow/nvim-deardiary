@@ -108,6 +108,8 @@ In this example, we are going to add a quarterly frequency that will be usable
 by all journals.
 
 ```lua
+local util = require("deardiary.util")
+
 config.frequencies.quarterly = {
     transform = function(curr_date, offset)
         -- Parameters:
@@ -148,10 +150,17 @@ config.frequencies.quarterly = {
         --     Path of new entry as a string
         local quarter = (entry_date:getmonth() / 4) + 1
         local year = entry_date:getyear()
-        return string.format("%d-%d", year, quarter) .. ".md"
+        local filename = string.format("%d-%d.md", year, quarter)
+        return util.join_path({"quarterly", filename})
     end,
 }
 ```
+
+Note: When creating a new frequency, it is recommended that you namespace your
+entries so that you can avoid collisions with entries from different journals.
+You can choose to put entries in a diffferent folder under the journal such as
+`quarterly/2021-01.md`. Alternately, you can add a prefix to the filename 
+such as `quaretrly-2021-01.md`.
 
 To use your new frequency, first configure at least one existing journal to
 use this new frequency (see previous section). Then, type the following in
@@ -176,8 +185,8 @@ config.journals = {
             "daily",
             "quarterly",
             biweekly = {
-                transform = function(cdate, offset)
-                    return config.frequencies.weekly.transform(cdate, 2 * offset)
+                transform = function(curr_date, offset)
+                    return config.frequencies.weekly.transform(curr_date, 2 * offset)
                 end,
                 template = function(entry_date)
                     local bi_week_number = entry_date:getweeknumber(2) / 2
@@ -187,7 +196,8 @@ config.journals = {
                 formatpath = function(entry_date)
                     local bi_week_number = entry_date:getweeknumber(2) / 2
                     local year = entry_date:getyear()
-                    return string.format("%d-%d", year, bi_week_number) .. ".md"
+                    local filename = string.format("%d-%d.md", year, bi_week_number)
+                    return util.join_path({"biweekly", filename})
                 end,
             },
         },
@@ -216,7 +226,7 @@ end
 config.frequencies.monthly.formatpath = function(entry_date)
     -- Puts all monthly entries in one folder instead of separating per year 
     -- which is the default
-    return entry_date:fmt("%Y-%m.md")
+    return entry_date:fmt(util.join_path({"monthly","%Y-%m.md"}) )
 end
 ```
 
@@ -238,7 +248,7 @@ config.journals = {
                 formatpath = function(entry_date)
                     -- Puts all daily entries in one folder instead of
                     -- separating per year and month which is the default
-                    return entry_date:fmt("%Y-%m-%d.md")
+                    return entry_date:fmt(util.join_path({"daily","%Y-%m-%d.md"}))
                 end,
             },
             "weekly",
@@ -247,6 +257,12 @@ config.journals = {
     ...
 }
 ```
+
+Note: When overriding `formatpath` for a journal, it is recommended to
+namespace your entries to avoid collisions between entries of different
+frequencies. You can choose to put entries in a different folder under journal
+such as `daily/2021-01.md`. Alternately, you can add a prefix to the 
+filename such as `daily-2021-01.md`.
 
 ==============================================================================
 4. Usage                                                        *DearDiaryUsage*
