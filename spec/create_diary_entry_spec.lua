@@ -95,6 +95,10 @@ describe("test create_diary_entry()", function()
                 path = journal_path,
                 frequencies = {"daily", "monthly", "weekly", "yearly"},
             },
+            {
+                path = journal_path,
+                frequencies = {"daily", "monthly", "weekly", "yearly"},
+            },
         }
 
         deardiary.create_diary_entry("nonexistent", 0, curr_date)
@@ -136,6 +140,18 @@ describe("test create_diary_entry()", function()
                 frequencies = {"daily", "monthly", "weekly", "yearly"},
             },
         }
+
+        it("before journal set, will work because one journal", function()
+            local formatpath = config.frequencies.daily.formatpath
+            deardiary.create_diary_entry("daily", 0, curr_date)
+            write_buffers()
+            local today_path = pl.path.join(journal_path, formatpath(date("2020-12-31")))
+            assert.is_not_nil(lfs.attributes(today_path))
+
+            local contents = pl.file.read(today_path)
+            local expected_contents = "# Thursday, December 31, 2020"
+            assert.same(contents, expected_contents)
+        end)
 
         deardiary.set_current_journal(1)
 
