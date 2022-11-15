@@ -24,8 +24,15 @@ M.create_diary_entry = function(frequency_name, offset, curr_date)
 
     local journal = M.current_journal
     if journal == nil then
-        vim.cmd("echo 'No journal set'")
-        return
+        local count = 0
+        for _ in pairs(config.journals) do count = count + 1 end
+        if count == 1 then
+            M.set_current_journal(1)
+            journal = M.current_journal
+        else
+            vim.cmd("echo 'No journal set'")
+            return
+        end
     end
 
     local config_freq = config.frequencies[frequency_name]
